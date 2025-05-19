@@ -31,6 +31,7 @@ from sgm.util import (  # noqa
     get_raw_audio,
     save_audio_video,
     calculate_splits,
+    ensure_landmarks_shape,
 )
 from sgm.data.data_utils import (  # noqa
     create_masks_from_landmarks_full_size,
@@ -890,6 +891,7 @@ def extract_video_landmarks(video_frames, landmarks_model):
     for i in tqdm(range(0, len(video_frames), batch_size), desc="Extracting landmarks"):
         batch = video_frames[i : i + batch_size]
         batch_landmarks = landmarks_model.extract_landmarks(batch)
+        batch_landmarks = ensure_landmarks_shape(batch_landmarks, landmarks)
         landmarks.extend(batch_landmarks)
 
     torch.cuda.empty_cache()

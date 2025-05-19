@@ -53,6 +53,78 @@ def process_video(video_path, landmarks_extractor, output_dir, batch_size=32):
             # Extract landmarks for the batch
             batch_landmarks = landmarks_extractor.extract_landmarks(frames_array)
 
+            # Check if landmarks were detected for each frame
+            for i in range(len(batch_landmarks)):
+                # If no face detected or landmarks are None
+                if batch_landmarks[i] is None or len(batch_landmarks[i]) == 0:
+                    # Find the closest valid landmark (before or after)
+                    valid_indices = [
+                        j
+                        for j, lm in enumerate(all_landmarks)
+                        if lm is not None and len(lm) > 0
+                    ]
+                    if valid_indices:
+                        closest_idx = min(
+                            valid_indices,
+                            key=lambda idx: abs(idx - len(all_landmarks) - i),
+                        )
+                        batch_landmarks[i] = all_landmarks[closest_idx]
+                    elif (
+                        len(batch_landmarks) > i + 1
+                        and batch_landmarks[i + 1] is not None
+                        and len(batch_landmarks[i + 1]) > 0
+                    ):
+                        # Use the next valid landmark in the current batch if available
+                        next_valid_idx = next(
+                            (
+                                j
+                                for j in range(i + 1, len(batch_landmarks))
+                                if batch_landmarks[j] is not None
+                                and len(batch_landmarks[j]) > 0
+                            ),
+                            None,
+                        )
+                        if next_valid_idx is not None:
+                            batch_landmarks[i] = batch_landmarks[next_valid_idx]
+                        else:
+                            # If no valid landmarks found, set an error
+                            raise ValueError(
+                                f"Error: No valid landmarks found for frame {_ - len(frames_batch) + i + 1} in {video_path}"
+                            )
+                            batch_landmarks[i] = np.zeros((68, 2))
+                    else:
+                        # If no valid landmarks found, set an error
+                        raise ValueError(
+                            f"Error: No valid landmarks found for frame {_ - len(frames_batch) + i + 1} in {video_path}"
+                        )
+                        batch_landmarks[i] = np.zeros((68, 2))
+
+                # If multiple faces detected, use the first one
+                if isinstance(batch_landmarks[i], list) and len(batch_landmarks[i]) > 0:
+                    batch_landmarks[i] = batch_landmarks[i][0]
+
+                # Ensure the landmark has the correct shape (68x2)
+                if batch_landmarks[i].shape != (68, 2):
+                    # If the shape is wrong, use the closest valid landmark or set an error
+                    valid_indices = [
+                        j
+                        for j, lm in enumerate(all_landmarks)
+                        if lm is not None
+                        and hasattr(lm, "shape")
+                        and lm.shape == (68, 2)
+                    ]
+                    if valid_indices:
+                        closest_idx = min(
+                            valid_indices,
+                            key=lambda idx: abs(idx - len(all_landmarks) - i),
+                        )
+                        batch_landmarks[i] = all_landmarks[closest_idx]
+                    else:
+                        raise ValueError(
+                            f"Error: No valid landmarks with shape (68, 2) found for frame {_ - len(frames_batch) + i + 1} in {video_path}"
+                        )
+                        batch_landmarks[i] = np.zeros((68, 2))
+
             all_landmarks.extend(batch_landmarks)
 
             # Clear the batch
