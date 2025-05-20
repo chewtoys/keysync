@@ -130,7 +130,7 @@ For inference you need to have the audio and video embeddings precomputed.
 The simplest way to run inference on your own data is using the `infer_raw.sh` script which will compute those embeddings for you:
 
 ```bash
-bash scripts/infer_raw_data.sh \
+bash scripts/infer_raw.sh \
   --filelist "data/videos" \
   --file_list_audio "data/audios" \
   --output_folder "my_animations" \
