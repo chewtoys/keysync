@@ -134,8 +134,8 @@ bash scripts/infer_raw.sh \
   --filelist "data/videos" \
   --file_list_audio "data/audios" \
   --output_folder "my_animations" \
-  --keyframes_ckpt "path/to/keyframes_model.ckpt" \
-  --interpolation_ckpt "path/to/interpolation_model.ckpt" \
+  --keyframes_ckpt "path/to/keyframe_dub.pt" \
+  --interpolation_ckpt "path/to/interpolation_dub.pt" \
   --compute_until 45
 ```
 
