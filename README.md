@@ -81,7 +81,7 @@ We provide an interactive demo of KeySync at [https://huggingface.co/spaces/toni
 
 ```bash
 # Create conda environment with necessary dependencies
-conda create -n KeySync python=3.11 nvidia::cuda-nvcc conda-forge::ffmpeg -y
+conda create -n KeySync python=3.11 conda-forge::ffmpeg -y
 conda activate KeySync
 
 # Install requirements
@@ -98,7 +98,13 @@ pip install -e . --no-deps
 
 ### Known Issues
 
-If you encounter synchronization issues between omegaconf and antlr4, you can fix them by running:
+- On some machines, you may need to install `nvidia::cuda-nvcc`. If this is the case, you can do so by running:
+
+```bash
+conda install nvidia::cuda-nvcc
+```
+
+- If you encounter synchronization issues between omegaconf and antlr4, you can fix them by running:
 
 
 ```bash
