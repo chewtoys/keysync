@@ -127,8 +127,13 @@ git clone https://huggingface.co/toninio19/keysync pretrained_models
 To use KeySync with your own data, for simplicity organize your files as follows:
 - Place video files (`.mp4`) in the `data/videos/` directory
 - Place audio files (`.wav`) in the `data/audios/` directory
-
 Otherwise you need to specify a different video_dir and audio_dir.
+
+To prepare the data, we provide some scripts in `scripts/util`:
+- **Standardize video and audio formats:** Use `ffmpeg_converter.py` to convert videos to 25 fps and audio to 16000Hz. This ensures compatibility with the models.
+
+- **Crop videos around the face:** Use `crop_video.py` to crop the videos, which can improve performance and focus the model's attention on the relevant facial region.
+
 
 ### 2. Running Inference
 
@@ -248,6 +253,12 @@ If you use KeySync in your research, please cite our paper:
       url={https://arxiv.org/abs/2505.00497}, 
 }
 ```
+
+## Contributors
+
+<a href="https://github.com/kacperkan">
+  <img src="https://github.com/kacperkan.png?size=100" alt="kacperkan" width="100">
+</a>
 
 ## Acknowledgements
 
